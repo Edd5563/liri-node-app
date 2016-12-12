@@ -5,7 +5,7 @@ var userInput = process.argv[3];
 
 var Twitter = require('twitter');
 var spotify = require('spotify');
-
+var request = require("request");
 
 
 
@@ -14,7 +14,7 @@ var spotify = require('spotify');
 
 	switch (action) {
 	  case "my-tweets":
-		twitter()
+		twitter();
 		break;
 
 
@@ -22,32 +22,23 @@ var spotify = require('spotify');
 		//node liri.js spotify-this-song '<song name here>'
 
 	  case "spotify-this-song":
-	  spotify();
-	  	
-	    //This will show the following information about the song in your terminal/bash window
-		// Artist(s)
-		// The song's name
-		// A preview link of the song from Spotify
-		// The album that the song is from
-		// if no song is provided then your program will default to
-		//The Sign" by Ace of Base
-
-	    console.log('');
+	  	if (userInput == undefined) {
+	  		console.log("Underfined search... Default search Enabled");
+	  		userInput = "Crazy Train";
+	  		song(userInput);
+	  	} else {
+	  		song(userInput);
+	  	}
 	    break;
 
 
 
-
-
-		
-
-
+	  case "movie-this":
 		//COMMAND
 		// node liri.js do-what-it-says
 
 
 
-	  case "movie-this":
 		// This will output the following information to your terminal/bash window:
 
 		// Title of the movie.
@@ -65,24 +56,19 @@ var spotify = require('spotify');
 		// It's on Netflix!
 
 
-
-
-		//COMMAND
-		// node liri.js do-what-it-says
-
-	    console.log('');
 		break;
-
-
-		// Using the fs Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
-		// It should run spotify-this-song for "I Want it That Way," as follows the text in random.txt.
-		// Feel free to change the text in that document to test out the feature for other commands.
 
 
 
 
   case "do-what-it-says":
-    console.log('');
+		//COMMAND
+		// node liri.js do-what-it-says
+
+		// Using the fs Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
+		// It should run spotify-this-song for "I Want it That Way," as follows the text in random.txt.
+		// Feel free to change the text in that document to test out the feature for other commands.
+
     break;
 }
 
@@ -93,6 +79,12 @@ var spotify = require('spotify');
 
 // Function Area-------------
 
+
+
+
+
+
+// add notes
 function twitter(){
 	
 	var twitterKeys = require("./keys.js");
@@ -110,31 +102,37 @@ function twitter(){
 	  	}
 	})
 
-} // End of twitter function
+} 
 
 
 
-function spotify() {
-	spotify.search({ type: 'track', query: 'dancing in the moonlight' }, function(err, data) {
-    	if ( err ) {
-        	console.log('Error occurred: ' + err);
-        	return;
-    	}
 
-    // Do something with 'data'
+
+
+
+
+
+
+
+
+
+
+
+
+
+// add notes
+function song(userInput) {
+	spotify.search({ type: 'track', query: userInput }, function(err, data) {
+    if ( err ) {
+        console.log('Error occurred: ' + err);
+        return;
+    }
+    	console.log('Artist: '+ data.tracks.items[0].album.artists[0].name);
+    	console.log('Preview Link: '+ data.tracks.items[0].external_urls.spotify);
+    	console.log('Song Name: '+ data.tracks.items[0].name);
+    	console.log('Album of Song: '+ data.tracks.items[0].album.name);
 	});
-
-
 }
-
-
-
-
-
-
-
-
-
 
 
 

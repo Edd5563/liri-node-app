@@ -12,9 +12,9 @@ i got this error
 
 I even remade my app key just incase it was because i did to many but with new keys it still did not work.
 
+ 
 
-
-when i switch the screen_name to q i get this
+when i switch the {screen_name} to {q} i get this
 
 TypeError: Cannot read property 'length' of undefined
     at /Users/edwinrivera/Desktop/liri-node-app/assets/js/liri.js:103:33
@@ -35,8 +35,8 @@ Edwins-MacBook-Pro:js edwinrivera$
 
 
 -------------------------------------------
-//Errors encountered with () NPM//
-
+//Errors encountered with (Spotify) NPM//
+No errors. Task Complete
 
 
 
