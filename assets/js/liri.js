@@ -34,6 +34,17 @@ var request = require("request");
 
 
 	  case "movie-this":
+		
+	  if (userInput == undefined) {
+	  		console.log("Underfined search... Default search Enabled");
+	  		userInput = "Matrix";
+	  		movies(userInput);
+	  	} else {
+	  		movies(userInput);
+	  	}
+
+
+
 		//COMMAND
 		// node liri.js do-what-it-says
 
@@ -80,10 +91,6 @@ var request = require("request");
 // Function Area-------------
 
 
-
-
-
-
 // add notes
 function twitter(){
 	
@@ -91,11 +98,11 @@ function twitter(){
 	var client = new Twitter(twitterKeys);
 
 	var params = {
-		q: 'teched5563', //can be changed to action
+		screen_name: 'teched5563', //can be changed to action
 		count: 20
 	};
 
-	client.get('search/tweets', params, function(err, data, response) {
+	client.get('statuses/user_timeline', params, function(err, data, response) {
 	   var myTweets = data.statuses;
 	  	for (var i = 0; i < myTweets.length; i++) {
 	  		console.log(myTweets[i].text);
@@ -103,19 +110,6 @@ function twitter(){
 	})
 
 } 
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -133,6 +127,36 @@ function song(userInput) {
     	console.log('Album of Song: '+ data.tracks.items[0].album.name);
 	});
 }
+
+
+
+
+
+
+function movies(userInput) {
+
+var webQuery = 'http://www.omdbapi.com/?t='+ movieName +'&y=&plot=short&r=json';
+
+var movieName = userInput;
+
+
+
+
+// Then run a request to the OMDB API with the movie specified
+request(webQuery, function(error, response, body) {
+
+  // If the request is successful (i.e. if the response status code is 200)
+    if (!error && response.statusCode === 200) {
+    console.log("The movie's rating is: " + JSON.parse(body).imdbRating);
+    console.log(webQuery);
+
+	}
+});
+
+
+}
+
+
 
 
 
