@@ -18,59 +18,33 @@ var request = require("request");
 		break;
 
 
-		//COMMAND
-		//node liri.js spotify-this-song '<song name here>'
+		// COMMAND
+		// node liri.js spotify-this-song '<song name here>'
 
 	  case "spotify-this-song":
-	  	if (userInput == undefined) {
-	  		console.log("Underfined search... Default search Enabled");
-	  		userInput = "Crazy Train";
-	  		song(userInput);
-	  	} else {
-	  		song(userInput);
-	  	}
-	    break;
+		  	if (userInput == undefined) {
+		  		console.log("Underfined search... Default search Enabled");
+		  		userInput = "Crazy Train";
+		  		song(userInput);
+		  	} else {
+		  		song(userInput);
+		  	}
+	  break;
 
 
 
 	  case "movie-this":
-		
-	  if (userInput == undefined) {
+	  	if (userInput == undefined) {
 	  		console.log("Underfined search... Default search Enabled");
-	  		userInput = "Matrix";
+	  		userInput = "Batman";
 	  		movies(userInput);
-	  	} else {
-	  		movies(userInput);
-	  	}
+	  		} else {
+	  			movies(userInput);
+	  		}
 
-
-
-		//COMMAND
-		// node liri.js do-what-it-says
-
-
-
-		// This will output the following information to your terminal/bash window:
-
-		// Title of the movie.
-		// Year the movie came out.
-		// IMDB Rating of the movie.
-		// Country where the movie was produced.
-		// Language of the movie.
-		// Plot of the movie.
-		// Actors in the movie.
-		// Rotten Tomatoes Rating.
-		// Rotten Tomatoes URL.
-		// If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
-
-		// If you haven't watched "Mr. Nobody," then you should: http://www.imdb.com/title/tt0485947/
-		// It's on Netflix!
-
-
-		break;
-
-
-
+			//COMMAND
+			// node liri.js do-what-it-says
+	  break;
 
   case "do-what-it-says":
 		//COMMAND
@@ -93,26 +67,24 @@ var request = require("request");
 
 // add notes
 function twitter(){
-	
-	var twitterKeys = require("./keys.js");
-	var client = new Twitter(twitterKeys);
+	var keys = require("./keys.js");
+	keys = keys.twitterKeys;
+	var client = new Twitter(keys);
 
-	var params = {
-		screen_name: 'teched5563', //can be changed to action
+	var params = { 
 		count: 20
 	};
 
 	client.get('statuses/user_timeline', params, function(err, data, response) {
-	   var myTweets = data.statuses;
-	  	for (var i = 0; i < myTweets.length; i++) {
-	  		console.log(myTweets[i].text);
-	  	}
+	   		for (var i = 0; i < data.length; i++) {
+	  			// var myTweets = ;
+	  			console.log(data[i].text);
+	  			console.log('------------------------------------');
+	  		}
+
 	})
 
 } 
-
-
-
 
 // add notes
 function song(userInput) {
@@ -128,41 +100,32 @@ function song(userInput) {
 	});
 }
 
-
-
-
-
-
+//add notes
 function movies(userInput) {
 
-var webQuery = 'http://www.omdbapi.com/?t='+ movieName +'&y=&plot=short&r=json';
+	var nodeArgs = process.argv[3];
+	var movieName = nodeArgs;
 
-var movieName = userInput;
+	var webQuery = 'http://www.omdbapi.com/?t='+ movieName +'&y=&plot=short&tomatoes=true&r=json';
+	console.log(webQuery);
 
-
-
-
-// Then run a request to the OMDB API with the movie specified
-request(webQuery, function(error, response, body) {
+	// Then run a request to the OMDB API with the movie specified
+	request(webQuery, function(error, response, body) {
 
   // If the request is successful (i.e. if the response status code is 200)
-    if (!error && response.statusCode === 200) {
-    console.log("The movie's rating is: " + JSON.parse(body).imdbRating);
-    console.log(webQuery);
-
-	}
-});
-
-
+	    if (!error && response.statusCode === 200) {
+	    console.log("The movie's Title is: " + JSON.parse(body).Title);
+	    console.log("The movie's year release: " + JSON.parse(body).Year);
+	    console.log("The movie's rating is: " + JSON.parse(body).imdbRating);
+	    console.log("The movie's country released: " + JSON.parse(body).Country);
+	    console.log("The movie's movie language: " + JSON.parse(body).Language);
+	    console.log("The movie's Plot: " + JSON.parse(body).Plot);
+	    console.log("The movie's actors: " + JSON.parse(body).Actors);
+	    console.log("The movie's Rotten Tomatoes score: " + JSON.parse(body).tomatoRating);
+	    console.log("The movie's Rotten Tomatoes URL: " + JSON.parse(body).tomatoURL);
+		}
+	});
 }
-
-
-
-
-
-
-
-
 
 
 
