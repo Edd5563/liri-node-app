@@ -6,7 +6,7 @@ var userInput = process.argv[3];
 var Twitter = require('twitter');
 var spotify = require('spotify');
 var request = require("request");
-
+var 	 fs = require('fs');
 
 
 		//COMMAND
@@ -15,7 +15,7 @@ var request = require("request");
 	switch (action) {
 	  case "my-tweets":
 		twitter();
-		break;
+	  break;
 
 
 		// COMMAND
@@ -42,19 +42,12 @@ var request = require("request");
 	  			movies(userInput);
 	  		}
 
-			//COMMAND
-			// node liri.js do-what-it-says
+			
 	  break;
 
-  case "do-what-it-says":
-		//COMMAND
-		// node liri.js do-what-it-says
-
-		// Using the fs Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
-		// It should run spotify-this-song for "I Want it That Way," as follows the text in random.txt.
-		// Feel free to change the text in that document to test out the feature for other commands.
-
-    break;
+      case "do-what-it-says":
+      	doWhatItSays();
+      break;
 }
 
 
@@ -65,54 +58,49 @@ var request = require("request");
 // Function Area-------------
 
 
-// add notes
+// Twitter NPM
 function twitter(){
-	var keys = require("./keys.js");
+	var keys = require("./keys.js"); //Import keys
 	keys = keys.twitterKeys;
 	var client = new Twitter(keys);
-
 	var params = { 
-		count: 20
+		count: 20  // Automatically sets to user profile so i set tweet count to 20
 	};
 
 	client.get('statuses/user_timeline', params, function(err, data, response) {
-	   		for (var i = 0; i < data.length; i++) {
-	  			// var myTweets = ;
-	  			console.log(data[i].text);
-	  			console.log('------------------------------------');
-	  		}
-
+   		for (var i = 0; i < data.length; i++) {
+  			// var myTweets = ;
+  			console.log(data[i].text);//  Sends out my Tweets
+  			console.log('-----------------------------------------------------------------');
+  		}
 	})
+} // End Twitter Function
 
-} 
-
-// add notes
+//Spotify NPM  ||WARNING||, Needs to be looged in your spotify account to work.
 function song(userInput) {
 	spotify.search({ type: 'track', query: userInput }, function(err, data) {
     if ( err ) {
         console.log('Error occurred: ' + err);
         return;
-    }
+    }  // Calls the NPM for info and sends out song information
     	console.log('Artist: '+ data.tracks.items[0].album.artists[0].name);
     	console.log('Preview Link: '+ data.tracks.items[0].external_urls.spotify);
     	console.log('Song Name: '+ data.tracks.items[0].name);
     	console.log('Album of Song: '+ data.tracks.items[0].album.name);
 	});
-}
+}// try running default mode! and enjoy singing to it! Youll thank me later!
 
 //add notes
 function movies(userInput) {
-
+//Found a  weird bug that Node automatically seperates your words with +'s when you make your call use "example" to activate this feature
 	var nodeArgs = process.argv[3];
 	var movieName = nodeArgs;
 
 	var webQuery = 'http://www.omdbapi.com/?t='+ movieName +'&y=&plot=short&tomatoes=true&r=json';
-	console.log(webQuery);
+	// console.log(webQuery);// For testing
 
-	// Then run a request to the OMDB API with the movie specified
+	// Then run a request to the OMDB API with the movie entered by user.
 	request(webQuery, function(error, response, body) {
-
-  // If the request is successful (i.e. if the response status code is 200)
 	    if (!error && response.statusCode === 200) {
 	    console.log("The movie's Title is: " + JSON.parse(body).Title);
 	    console.log("The movie's year release: " + JSON.parse(body).Year);
@@ -124,12 +112,50 @@ function movies(userInput) {
 	    console.log("The movie's Rotten Tomatoes score: " + JSON.parse(body).tomatoRating);
 	    console.log("The movie's Rotten Tomatoes URL: " + JSON.parse(body).tomatoURL);
 		}
-	});
+	}); // run default and enjoy.
 }
 
 
+function doWhatItSays() {
+  fs.readFile('random.txt', 'utf8', function(err, data) {
+  	if (err) return console.log(err);
+  	  
+  	var objectData = data.split(','); //Splits Data .
 
+  	var dataAction = objectData[0]; // Grabs item 0 from object
+  	var dataInput = objectData[1]; // grabs item 1 from object
 
+switch (dataAction) {
+	  case "my-tweets":
+		twitter();
+	  break;
+
+	  case "spotify-this-song":
+		  	if (dataInput == undefined) {
+		  		console.log("Underfined search... Default search Enabled");
+		  		dataInput = "Crazy Train";
+		  		song(dataInput);
+		  	} else {
+		  		song(dataInput);
+		  	}
+	  break;
+
+	  case "movie-this":
+	  	if (dataInput == undefined) {
+	  		console.log("Underfined search... Default search Enabled");
+	  		dataInput = "Batman";
+	  		movies(dataInput);
+	  		} else {
+	  			movies(dataInput);
+	  		}
+	  break;
+	}
+
+	eval(dataAction, dataInput); // this i had a bit of a hard time using. Because so many
+// people warned againts using it because it has security warnings when running a app.
+// and not many options i could find.
+	});
+  } 
 
 //BONUS
 
