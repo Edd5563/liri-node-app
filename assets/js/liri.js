@@ -8,13 +8,14 @@ var spotify = require('spotify');
 var request = require("request");
 var 	 fs = require('fs');
 
-
+logger()
 		//COMMAND
 	 	//node liri.js my-tweets
 
 	switch (action) {
 	  case "my-tweets":
 		twitter();
+		addToLog()
 	  break;
 
 
@@ -29,6 +30,7 @@ var 	 fs = require('fs');
 		  	} else {
 		  		song(userInput);
 		  	}
+		  	addToLog()
 	  break;
 
 
@@ -41,12 +43,12 @@ var 	 fs = require('fs');
 	  		} else {
 	  			movies(userInput);
 	  		}
-
-			
+	  		addToLog()	
 	  break;
 
       case "do-what-it-says":
       	doWhatItSays();
+      	addToLog()
       break;
 }
 
@@ -157,9 +159,37 @@ switch (dataAction) {
 	});
   } 
 
+
+
+
+
 //BONUS
 
 // In addition to logging the data to your terminal/bash window, output the data to a .txt file called log.txt.
 // Make sure you append each command you run to the log.txt file.
 // Do not overwrite your file each time you run a command.
+
+function logger() {
+	var toLog = [action, userInput];
+	var fs = require('fs');
+	fs.writeFile('log.txt', toLog, function(err){
+  	if (err){return console.log(err);}
+	return console.log('\n');
+	});
+}
+
+
+function addToLog() {
+var toLog = [action, userInput];
+
+	var fs = require('fs');
+	fs.appendFile('log.txt', toLog, function(err){if (err) return console.log(err);
+		return console.log("Content Added\n");
+	});
+}
+
+
+
+
+
 
